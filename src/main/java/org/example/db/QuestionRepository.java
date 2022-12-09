@@ -2,6 +2,8 @@ package org.example.db;
 
 import org.example.db.entities.QuestionEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,5 +21,9 @@ public interface QuestionRepository extends JpaRepository<QuestionEntity, String
 
     @Transactional
     QuestionEntity save(QuestionEntity questionEntity);
+
+    @Transactional
+    @Query(value = "SELECT * FROM question WHERE question_id = :themeId", nativeQuery = true)
+    Optional<QuestionEntity> getQuestionByName(@Param("themeId") String themeId);
 
 }
