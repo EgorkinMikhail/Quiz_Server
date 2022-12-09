@@ -1,0 +1,43 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "com.example.grpc";
+
+package com.example.grpc;
+import "google/protobuf/empty.proto";
+
+message Question {
+  string questionId = 1;
+  string question = 2;
+  string themeId = 3;
+  string answerId = 4;
+}
+
+message QuestionId {
+  string questionId = 1;
+}
+
+message Answer {
+  string answerId = 1;
+  string answer = 2;
+}
+
+message Theme {
+  string themeId = 1;
+  string theme = 2;
+}
+
+message ThemeId {
+  string themeId = 1;
+}
+
+service  QuizService {
+
+  rpc getRandomQuestion (google.protobuf.Empty) returns (Question);
+  rpc getQuestionById (QuestionId) returns (Question);
+  rpc getQuestionByTheme (Theme) returns (Question);
+  rpc createQuestion (Question) returns (QuestionId);
+  rpc createTheme (Theme) returns (ThemeId);
+  rpc getTheme (ThemeId) returns (Theme);
+
+}

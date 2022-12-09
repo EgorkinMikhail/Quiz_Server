@@ -1,0 +1,92 @@
+databaseChangeLog:
+  - logicalFilePath: db/changelog/db.changelog-lesson1.yaml
+  - changeSet:
+      id: 1
+      author: admin
+      changes:
+        - createTable:
+            tableName: Question
+            columns:
+              - column:
+                  name: question_id
+                  type: varchar(255)
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: question
+                  type: varchar(255)
+                  constraints:
+                    unique: true
+                    nullable: false
+              - column:
+                  name: theme_id
+                  type: varchar(255)
+              - column:
+                  name: answer_id
+                  type: varchar(255)
+        - createTable:
+            tableName: Answer
+            columns:
+              - column:
+                  name: answer_id
+                  type: varchar(255)
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: answer
+                  type: varchar(255)
+                  constraints:
+                    unique: true
+                    nullable: false
+        - createTable:
+            tableName: Theme
+            columns:
+              - column:
+                  name: theme_id
+                  type: varchar(255)
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: theme
+                  type: varchar(255)
+                  constraints:
+                    unique: true
+                    nullable: false
+  - changeSet:
+      id: 2
+      author: admin
+      comment: "add first question"
+      changes:
+        - insert:
+            tableName: Question
+            columns:
+              - column:
+                  name: question_id
+                  value: "1"
+              - column:
+                  name: question
+                  value: "What medicine is made from mold? (Penicillin)"
+              - column:
+                  name: theme_id
+                  value: "1"
+              - column:
+                  name: answer_id
+                  value: "1"
+        - insert:
+            tableName: Question
+            columns:
+              - column:
+                  name: question_id
+                  value: "2"
+              - column:
+                  name: question
+                  value: "What bird is the smallest in the world? (Bee Hummingbird)"
+              - column:
+                  name: theme_id
+                  value: "2"
+              - column:
+                  name: answer_id
+                  value: "2"
