@@ -6,14 +6,17 @@ import io.grpc.stub.StreamObserver;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.devh.boot.grpc.server.service.GrpcService;
-import org.example.grpc.logic.QuestionLogic;
+import org.example.grpc.logic.question.QuestionLogic;
+import org.example.grpc.logic.theme.ThemeLogic;
 
 @Slf4j
 @GrpcService
 @RequiredArgsConstructor
-public class QuestionServiceImpl extends QuizServiceGrpc.QuizServiceImplBase {
+public class QuizServiceImpl extends QuizServiceGrpc.QuizServiceImplBase {
 
     private final QuestionLogic questionLogic;
+    private final ThemeLogic themeLogic;
+
     @Override
     public void getRandomQuestion(Empty request, StreamObserver<Question> responseObserver) {
         responseObserver.onNext(questionLogic.getRandomQuestion());
@@ -28,21 +31,25 @@ public class QuestionServiceImpl extends QuizServiceGrpc.QuizServiceImplBase {
 
     @Override
     public void getQuestionByTheme(Theme request, StreamObserver<Question> responseObserver) {
-        super.getQuestionByTheme(request, responseObserver);
+        responseObserver.onNext(questionLogic.getQuestionByTheme(request));
+        responseObserver.onCompleted();
     }
 
     @Override
     public void createQuestion(Question request, StreamObserver<QuestionId> responseObserver) {
-        super.createQuestion(request, responseObserver);
+        responseObserver.onNext(questionLogic.createQuestion(request));
+        responseObserver.onCompleted();
     }
 
     @Override
     public void createTheme(Theme request, StreamObserver<ThemeId> responseObserver) {
-        super.createTheme(request, responseObserver);
+        responseObserver.onNext(themeLogic.createTheme(request));
+        responseObserver.onCompleted();
     }
 
     @Override
     public void getTheme(ThemeId request, StreamObserver<Theme> responseObserver) {
-        super.getTheme(request, responseObserver);
+        responseObserver.onNext(themeLogic.getTheme(request));
+        responseObserver.onCompleted();
     }
 }

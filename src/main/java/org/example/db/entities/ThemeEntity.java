@@ -9,9 +9,8 @@ import javax.persistence.*;
 @Table(name = "Theme")
 public class ThemeEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "theme_id", nullable = false)
-    private Integer themeId;
+    private String themeId;
 
     @Column(name = "theme", nullable = false)
     private String theme;

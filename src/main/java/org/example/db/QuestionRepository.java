@@ -23,7 +23,10 @@ public interface QuestionRepository extends JpaRepository<QuestionEntity, String
     QuestionEntity save(QuestionEntity questionEntity);
 
     @Transactional
+    void delete(QuestionEntity questionEntity);
+
+    @Transactional(readOnly = true)
     @Query(value = "SELECT * FROM question WHERE question_id = :themeId", nativeQuery = true)
-    Optional<QuestionEntity> getQuestionByName(@Param("themeId") String themeId);
+    Optional<QuestionEntity> getQuestionByTheme(@Param("themeId") String themeId);
 
 }

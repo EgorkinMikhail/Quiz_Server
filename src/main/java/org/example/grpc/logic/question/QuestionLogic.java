@@ -1,4 +1,4 @@
-package org.example.grpc.logic;
+package org.example.grpc.logic.question;
 
 import com.example.grpc.Question;
 import com.example.grpc.QuestionId;

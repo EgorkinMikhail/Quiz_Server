@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.converter.ProtoJsonConverter;
 import org.example.exceptions.QuizExceptions;
-import org.example.grpc.logic.QuestionLogic;
+import org.example.grpc.logic.question.QuestionLogic;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -27,7 +27,6 @@ public class QuizControllerImpl implements QuizController {
 
         try {
             return ResponseEntity.ok(ProtoJsonConverter.toJsonSimple(questionLogic.getRandomQuestion()));
-
         } catch (Exception e) {
             throw new QuizExceptions(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }

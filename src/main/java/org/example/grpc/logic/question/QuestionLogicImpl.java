@@ -1,4 +1,4 @@
-package org.example.grpc.logic;
+package org.example.grpc.logic.question;
 
 import com.example.grpc.Question;
 import com.example.grpc.QuestionId;
@@ -57,11 +57,27 @@ public class QuestionLogicImpl implements QuestionLogic {
 
     @Override
     public Question getQuestionByTheme(Theme theme) {
-        return null;
+        Optional<QuestionEntity> questionByName = questionRepository.getQuestionByTheme(theme.getThemeId());
+        return questionByName.map(questionEntity -> Question.newBuilder()
+                .setQuestionId(questionEntity.getQuestionId())
+                .setQuestion(questionEntity.getQuestion())
+                .setAnswerId(questionEntity.getAnswerId())
+                .setThemeId(questionEntity.getThemeId())
+                .build()).orElse(Question.newBuilder().build());
     }
 
     @Override
     public QuestionId createQuestion(Question question) {
-        return null;
+        if (questionRepository.findById(question.getQuestionId()).isPresent()) {
+            throw new QuizExceptions("Question ID is already in DB", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        QuestionEntity questionEntity = new QuestionEntity();
+        questionEntity.setQuestionId(question.getQuestionId());
+        questionEntity.setQuestion(question.getQuestion());
+        questionEntity.setThemeId(question.getThemeId());
+        questionEntity.setAnswerId(question.getAnswerId());
+        return QuestionId.newBuilder()
+                .setQuestionId(questionRepository.save(questionEntity).getQuestionId())
+                .build();
     }
 }

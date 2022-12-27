@@ -90,3 +90,48 @@ databaseChangeLog:
               - column:
                   name: answer_id
                   value: "2"
+        - insert:
+            tableName: Theme
+            columns:
+              - column:
+                  name: theme_id
+                  value: "1"
+              - column:
+                  name: theme
+                  value: "Medicine"
+        - insert:
+            tableName: Theme
+            columns:
+              - column:
+                  name: theme_id
+                  value: "2"
+              - column:
+                  name: theme
+                  value: "Nature"
+        - insert:
+            tableName: Theme
+            columns:
+              - column:
+                  name: theme_id
+                  value: "3"
+              - column:
+                  name: theme
+                  value: "Movies"
+        - insert:
+            tableName: Answer
+            columns:
+              - column:
+                  name: answer_id
+                  value: "1"
+              - column:
+                  name: answer
+                  value: "Penicillin"
+        - insert:
+            tableName: Answer
+            columns:
+              - column:
+                  name: answer_id
+                  value: "2"
+              - column:
+                  name: answer
+                  value: "Bee Hummingbird"
