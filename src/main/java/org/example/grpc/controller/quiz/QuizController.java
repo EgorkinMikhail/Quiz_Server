@@ -1,4 +1,4 @@
-package org.example.grpc.controller;
+package org.example.grpc.controller.quiz;
 
 import org.springframework.http.ResponseEntity;
 

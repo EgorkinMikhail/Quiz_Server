@@ -1,11 +1,9 @@
-package org.example.grpc.controller;
+package org.example.grpc.controller.quiz;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.converter.ProtoJsonConverter;
-import org.example.exceptions.QuizExceptions;
 import org.example.grpc.logic.question.QuestionLogic;
-import org.example.grpc.model.ErrorMessage;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,14 +34,5 @@ public class QuizControllerImpl implements QuizController {
     @GetMapping("/question/{theme}")
     public ResponseEntity<?> getQuestionsByTheme(@PathVariable("theme") String theme) throws IOException {
         return ResponseEntity.ok(ProtoJsonConverter.toJson(questionLogic.getQuestionsByTheme(theme)));
-    }
-
-    @ExceptionHandler(QuizExceptions.class)
-    public ResponseEntity<ErrorMessage> handleQuizException(QuizExceptions exception) {
-        return ResponseEntity.status(exception.getHttpStatus()).body(new ErrorMessage(exception.getMessage()));
-    }
-    @ExceptionHandler(IOException.class)
-    public ResponseEntity<ErrorMessage> handleIOException(QuizExceptions exception) {
-        return ResponseEntity.status(exception.getHttpStatus()).body(new ErrorMessage(exception.getMessage()));
     }
 }
