@@ -30,7 +30,7 @@ public class QuestionLogicImpl implements QuestionLogic {
         int randomIndex = 0;
 
         if (sizeOfQuestionList == 0) {
-            throw new QuizExceptions("Empty Question table in DB", HttpStatus.NOT_FOUND);
+            throw new QuizExceptions("Empty Question table in DB", HttpStatus.NOT_ACCEPTABLE);
         }
         if (sizeOfQuestionList > 1) {
             randomIndex = random.nextInt(sizeOfQuestionList);
@@ -53,14 +53,14 @@ public class QuestionLogicImpl implements QuestionLogic {
                 .setQuestion(questionEntity.getQuestion())
                 .setAnswerId(questionEntity.getAnswerId())
                 .setThemeId(questionEntity.getThemeId())
-                .build()).orElseThrow(() -> new QuizExceptions("Question with Id "+questionId+" not found", HttpStatus.NOT_FOUND));
+                .build()).orElseThrow(() -> new QuizExceptions("Question with Id "+questionId+" not found", HttpStatus.NOT_ACCEPTABLE));
     }
 
     @Override
     public QuestionList getQuestionsByTheme(String theme) {
         List<QuestionEntity> questionByName = questionRepository.getQuestionByTheme(theme);
         if (questionByName.isEmpty()) {
-            throw new QuizExceptions("Questions with with theme "+theme+" not found", HttpStatus.NOT_FOUND);
+            throw new QuizExceptions("Questions with with theme "+theme+" not found", HttpStatus.NOT_ACCEPTABLE);
         }
         return QuestionList.newBuilder()
                 .addAllQuestionList(questionByName
@@ -74,7 +74,7 @@ public class QuestionLogicImpl implements QuestionLogic {
     @Override
     public QuestionId createQuestion(Question question) {
         if (questionRepository.findById(question.getQuestionId()).isPresent()) {
-            throw new QuizExceptions("Question ID is already in DB", HttpStatus.NOT_FOUND);
+            throw new QuizExceptions("Question ID is already in DB");
         }
         QuestionEntity questionEntity = new QuestionEntity();
         questionEntity.setQuestionId(question.getQuestionId());
