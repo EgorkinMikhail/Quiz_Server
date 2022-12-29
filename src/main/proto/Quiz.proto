@@ -13,6 +13,10 @@ message Question {
   string answerId = 4;
 }
 
+message QuestionList {
+    repeated Question questionList = 1;
+}
+
 message QuestionId {
   string questionId = 1;
 }
@@ -20,6 +24,10 @@ message QuestionId {
 message Answer {
   string answerId = 1;
   string answer = 2;
+}
+
+message AnswerId {
+  string answerId = 1;
 }
 
 message Theme {
@@ -31,13 +39,22 @@ message ThemeId {
   string themeId = 1;
 }
 
-service  QuizService {
-
+service QuestionService {
   rpc getRandomQuestion (google.protobuf.Empty) returns (Question);
   rpc getQuestionById (QuestionId) returns (Question);
-  rpc getQuestionByTheme (Theme) returns (Question);
+  rpc getQuestionsByTheme (Theme) returns (QuestionList);
   rpc createQuestion (Question) returns (QuestionId);
+}
+
+service ThemeService {
   rpc createTheme (Theme) returns (ThemeId);
   rpc getTheme (ThemeId) returns (Theme);
+}
 
+service AnswerService {
+  rpc createAnswer (Answer) returns (AnswerId);
+  rpc getAnswer (AnswerId) returns (Answer);
+}
+
+service  QuizService {
 }

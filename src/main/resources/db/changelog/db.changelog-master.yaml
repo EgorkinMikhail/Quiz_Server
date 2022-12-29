@@ -58,7 +58,7 @@ databaseChangeLog:
   - changeSet:
       id: 2
       author: admin
-      comment: "add first question"
+      comment: "add first data"
       changes:
         - insert:
             tableName: Question
@@ -90,6 +90,21 @@ databaseChangeLog:
               - column:
                   name: answer_id
                   value: "2"
+        - insert:
+            tableName: Question
+            columns:
+              - column:
+                  name: question_id
+                  value: "3"
+              - column:
+                  name: question
+                  value: "How many hearts does an octopus have? (Three)"
+              - column:
+                  name: theme_id
+                  value: "2"
+              - column:
+                  name: answer_id
+                  value: "3"
         - insert:
             tableName: Theme
             columns:

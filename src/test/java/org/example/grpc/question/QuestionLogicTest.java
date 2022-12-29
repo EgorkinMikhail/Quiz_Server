@@ -2,7 +2,7 @@ package org.example.grpc.question;
 
 import com.example.grpc.Question;
 import com.example.grpc.QuestionId;
-import com.example.grpc.Theme;
+import com.example.grpc.QuestionList;
 import org.apache.commons.lang3.StringUtils;
 import org.example.db.QuestionRepository;
 import org.example.exceptions.QuizExceptions;
@@ -35,57 +35,66 @@ public class QuestionLogicTest {
 
     @Test
     public void getRandomQuestionTest() {
-        Question question = questionLogic.getRandomQuestion();
-        System.out.println(question);
-        assertTrue(StringUtils.isNotEmpty(question.getQuestionId()));
+        try {
+            Question question = questionLogic.getRandomQuestion();
+            System.out.println(question);
+            assertTrue(StringUtils.isNotEmpty(question.getQuestionId()));
+        } catch (RuntimeException e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     @Test
     public void getQuestionByIdTest() {
-        Question question = questionLogic.getQuestionById(QuestionId.newBuilder().setQuestionId("1").build());
+        Question question = questionLogic.getQuestionById("1");
         System.out.println(question.getQuestion());
         assertTrue(StringUtils.isNotEmpty(question.getQuestionId()));
-        question = questionLogic.getQuestionById(QuestionId.newBuilder().setQuestionId("-1").build());
-        assertTrue(StringUtils.isEmpty(question.getQuestionId()));
+    }
+
+    @Test
+    public void testThrowExceptionWhenQuestionIdNotFound() {
+        assertThrows(QuizExceptions.class, () -> questionLogic.getQuestionById("-1"));
     }
 
     @Test
     public void getQuestionByThemeTest() {
-        Question question = questionLogic.getQuestionByTheme(Theme.newBuilder().setThemeId("1").build());
-        System.out.println(question);
-        assertTrue(StringUtils.isNotEmpty(question.getQuestionId()));
-        question = questionLogic.getQuestionByTheme(Theme.newBuilder().setThemeId("-1").build());
-        System.out.println(question);
-        assertTrue(StringUtils.isEmpty(question.getQuestionId()));
+        QuestionList questionList = questionLogic.getQuestionsByTheme("Medicine");
+        System.out.println(questionList);
+        assertFalse(questionList.getQuestionListList().isEmpty());
+    }
+
+    @Test
+    public void testThrowExceptionWhenQuestionByThemeNotFound() {
+        assertThrows(QuizExceptions.class, () -> questionLogic.getQuestionsByTheme("-1"));
     }
 
     @Test
     public void testCreateQuestion() {
         QuestionId questionId = questionLogic.createQuestion(Question.newBuilder()
-                .setQuestionId("3")
+                .setQuestionId("4")
                 .setQuestion("Which actor won Best Actor Oscars for Philadelphia (1993) and Forrest Gump (1994)? (Tom Hanks)")
                 .setThemeId("3")
-                .setAnswerId("3")
+                .setAnswerId("4")
                 .build());
         String questionIdStr = questionId.getQuestionId();
         System.out.println(questionIdStr);
         StringUtils.isNotEmpty(questionIdStr);
-        Question question = questionLogic.getQuestionById(QuestionId.newBuilder().setQuestionId(questionIdStr).build());
+        Question question = questionLogic.getQuestionById(questionIdStr);
         System.out.println(question.getQuestion());
-        assertEquals("3", question.getQuestionId());
+        assertEquals("4", question.getQuestionId());
         assertEquals("Which actor won Best Actor Oscars for Philadelphia (1993) and Forrest Gump (1994)? (Tom Hanks)",
                 question.getQuestion());
     }
 
     @Test
     public void testThrowExceptionWhenCreateExistingQuestion() {
-        assertThrows(QuizExceptions.class, () ->{
+        assertThrows(QuizExceptions.class, () ->
             questionLogic.createQuestion(Question.newBuilder()
                     .setQuestionId("1")
                     .setQuestion("Which actor won Best Actor Oscars for Philadelphia (1993) and Forrest Gump (1994)? (Tom Hanks)")
                     .setThemeId("1")
                     .setAnswerId("3")
-                    .build());
-        });
+                    .build())
+        );
     }
 }

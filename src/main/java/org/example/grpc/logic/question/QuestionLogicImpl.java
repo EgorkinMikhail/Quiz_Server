@@ -2,7 +2,7 @@ package org.example.grpc.logic.question;
 
 import com.example.grpc.Question;
 import com.example.grpc.QuestionId;
-import com.example.grpc.Theme;
+import com.example.grpc.QuestionList;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.db.QuestionRepository;
@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -29,7 +30,7 @@ public class QuestionLogicImpl implements QuestionLogic {
         int randomIndex = 0;
 
         if (sizeOfQuestionList == 0) {
-            throw new QuizExceptions("Empty Question DB", HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new QuizExceptions("Empty Question table in DB", HttpStatus.NOT_FOUND);
         }
         if (sizeOfQuestionList > 1) {
             randomIndex = random.nextInt(sizeOfQuestionList);
@@ -45,31 +46,35 @@ public class QuestionLogicImpl implements QuestionLogic {
     }
 
     @Override
-    public Question getQuestionById(QuestionId questionId) {
-        Optional<QuestionEntity> questionEntityById = questionRepository.findById(questionId.getQuestionId());
+    public Question getQuestionById(String questionId) {
+        Optional<QuestionEntity> questionEntityById = questionRepository.findById(questionId);
         return questionEntityById.map(questionEntity -> Question.newBuilder()
                 .setQuestionId(questionEntity.getQuestionId())
                 .setQuestion(questionEntity.getQuestion())
                 .setAnswerId(questionEntity.getAnswerId())
                 .setThemeId(questionEntity.getThemeId())
-                .build()).orElse(Question.newBuilder().build());
+                .build()).orElseThrow(() -> new QuizExceptions("Question with Id "+questionId+" not found", HttpStatus.NOT_FOUND));
     }
 
     @Override
-    public Question getQuestionByTheme(Theme theme) {
-        Optional<QuestionEntity> questionByName = questionRepository.getQuestionByTheme(theme.getThemeId());
-        return questionByName.map(questionEntity -> Question.newBuilder()
-                .setQuestionId(questionEntity.getQuestionId())
-                .setQuestion(questionEntity.getQuestion())
-                .setAnswerId(questionEntity.getAnswerId())
-                .setThemeId(questionEntity.getThemeId())
-                .build()).orElse(Question.newBuilder().build());
+    public QuestionList getQuestionsByTheme(String theme) {
+        List<QuestionEntity> questionByName = questionRepository.getQuestionByTheme(theme);
+        if (questionByName.isEmpty()) {
+            throw new QuizExceptions("Questions with with theme "+theme+" not found", HttpStatus.NOT_FOUND);
+        }
+        return QuestionList.newBuilder()
+                .addAllQuestionList(questionByName
+                        .stream().map(questionEntity -> Question.newBuilder()
+                                .setQuestionId(questionEntity.getQuestionId())
+                                .setQuestion(questionEntity.getQuestion())
+                                .setAnswerId(questionEntity.getAnswerId())
+                                .setThemeId(questionEntity.getThemeId()).build()).collect(Collectors.toList())).build();
     }
 
     @Override
     public QuestionId createQuestion(Question question) {
         if (questionRepository.findById(question.getQuestionId()).isPresent()) {
-            throw new QuizExceptions("Question ID is already in DB", HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new QuizExceptions("Question ID is already in DB", HttpStatus.NOT_FOUND);
         }
         QuestionEntity questionEntity = new QuestionEntity();
         questionEntity.setQuestionId(question.getQuestionId());

@@ -36,8 +36,8 @@ public class ThemeLogicImpl implements ThemeLogic {
     public Theme getTheme(ThemeId themeId) {
         Optional<ThemeEntity> themeEntityById = themeRepository.findById(themeId.getThemeId());
         return themeEntityById.map(themeEntity -> Theme.newBuilder()
-                .setThemeId(themeEntity.getThemeId())
-                .setTheme(themeEntity.getTheme()).build())
+                        .setThemeId(themeEntity.getThemeId())
+                        .setTheme(themeEntity.getTheme()).build())
                 .orElse(Theme.newBuilder().build());
     }
 }

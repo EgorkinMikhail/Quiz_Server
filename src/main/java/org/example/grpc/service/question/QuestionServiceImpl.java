@@ -1,4 +1,4 @@
-package org.example.grpc.service;
+package org.example.grpc.service.question;
 
 import com.example.grpc.*;
 import com.google.protobuf.Empty;
@@ -7,15 +7,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.devh.boot.grpc.server.service.GrpcService;
 import org.example.grpc.logic.question.QuestionLogic;
-import org.example.grpc.logic.theme.ThemeLogic;
 
 @Slf4j
 @GrpcService
 @RequiredArgsConstructor
-public class QuizServiceImpl extends QuizServiceGrpc.QuizServiceImplBase {
+public class QuestionServiceImpl extends QuestionServiceGrpc.QuestionServiceImplBase {
 
     private final QuestionLogic questionLogic;
-    private final ThemeLogic themeLogic;
 
     @Override
     public void getRandomQuestion(Empty request, StreamObserver<Question> responseObserver) {
@@ -25,31 +23,19 @@ public class QuizServiceImpl extends QuizServiceGrpc.QuizServiceImplBase {
 
     @Override
     public void getQuestionById(QuestionId request, StreamObserver<Question> responseObserver) {
-        responseObserver.onNext(questionLogic.getQuestionById(request));
+        responseObserver.onNext(questionLogic.getQuestionById(request.getQuestionId()));
         responseObserver.onCompleted();
     }
 
     @Override
-    public void getQuestionByTheme(Theme request, StreamObserver<Question> responseObserver) {
-        responseObserver.onNext(questionLogic.getQuestionByTheme(request));
+    public void getQuestionsByTheme(Theme request, StreamObserver<QuestionList> responseObserver) {
+        responseObserver.onNext(questionLogic.getQuestionsByTheme(request.getThemeId()));
         responseObserver.onCompleted();
     }
 
     @Override
     public void createQuestion(Question request, StreamObserver<QuestionId> responseObserver) {
         responseObserver.onNext(questionLogic.createQuestion(request));
-        responseObserver.onCompleted();
-    }
-
-    @Override
-    public void createTheme(Theme request, StreamObserver<ThemeId> responseObserver) {
-        responseObserver.onNext(themeLogic.createTheme(request));
-        responseObserver.onCompleted();
-    }
-
-    @Override
-    public void getTheme(ThemeId request, StreamObserver<Theme> responseObserver) {
-        responseObserver.onNext(themeLogic.getTheme(request));
         responseObserver.onCompleted();
     }
 }

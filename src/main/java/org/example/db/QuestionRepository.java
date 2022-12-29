@@ -26,7 +26,7 @@ public interface QuestionRepository extends JpaRepository<QuestionEntity, String
     void delete(QuestionEntity questionEntity);
 
     @Transactional(readOnly = true)
-    @Query(value = "SELECT * FROM question WHERE question_id = :themeId", nativeQuery = true)
-    Optional<QuestionEntity> getQuestionByTheme(@Param("themeId") String themeId);
+    @Query(value = "SELECT * FROM question q JOIN theme t ON t.theme_id = q.theme_id WHERE t.theme = :theme", nativeQuery = true)
+    List<QuestionEntity> getQuestionByTheme(@Param("theme") String theme);
 
 }
